@@ -1,4 +1,5 @@
-# This is a Flask application that serves a home page and an API endpoint to retrieve items from a JSON file.
+# This is a simple Flask application that serves as a RESTful API for a database of transactions.
+# this code was inspired by the server.py code by Andrew Beatty in WSAA course
 
 # importing necessary libraries
 import json
