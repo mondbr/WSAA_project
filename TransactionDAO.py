@@ -94,10 +94,10 @@ class TransactionDAO:
       def convert_to_dictionary(self, result_line):
          transaction_keys = ['id', 'description', 'amount', 'transaction_type']
          transaction = {}
-         current_key = 0
-         for key in transaction_keys:
-            transaction[transaction_keys[current_key]] = key
-            current_key = current_key + 1
+         
+         for key in range(len(result_line)):
+            transaction[transaction_keys[key]] = result_line[key]
+            
          return transaction
       # convert_to_dictionary method is used to convert the result of a query into a dictionary format.
 
