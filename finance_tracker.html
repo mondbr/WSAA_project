@@ -41,6 +41,19 @@
          </thead>
          <tbody></tbody>
       </table>
+
+      <div id="createUpdateForm" style="display: none">
+         <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Transaction</h2>
+         <input type="hidden" name="id"/>
+         Description <input type="text" name="description" /><br/>
+         Amount <input type="number" name="amount"/> <br/>
+         Type <select name="transaction-type">
+             <option value="income">Income</option>
+             <option value="expense">Expense</option>
+         </select><br/>
+         <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+         <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+      </div>
       
       <h2>Income and Expenses</h2>
 
