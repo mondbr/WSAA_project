@@ -6,85 +6,122 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
-         <h1>Personal Budget Tracker</h1>
+      <h1>Personal Budget Tracker</h1>
       
-         <!-- this is the button to show the Create/Update form -->
+      <!-- this is the button to show the Create/Update form -->
 
-         <div> 
-            <button id="showCreateButton" onclick="showCreate()">Create New</button>
-         </div>
+      <div> 
+         <button id="showCreateButton" onclick="showCreate()">Create New</button>
+      </div>
 
          <!-- this is the table to display transactions hidden at start-->
 
-         <div id="createUpdateForm" style= "display: none;">
-            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
-            <input type="hidden" name="id"/>
-            Description: <input type="text" name="description" /><br/>
-            Amount: <input type="number" name="amount"/> <br/>
-            Type: 
-            <select name="transaction-type">
-               <option value="income">Income</option>
-               <option value="expense">Expense</option>
-            </select><br/>
-            <button id="doCreateButton" onclick="doCreate()">Create</button>
-            <button id="doUpdateButton" onclick="doUpdate()">Update</button>
-         </div>
+      <div id="createUpdateForm" style= "display: none;">
+         <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
+         Description: <input type="text" name="description" /><br/>
+         Amount: <input type="number" name="amount"/> <br/>
+         Type: 
+         <select name="transaction-type">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+         </select><br/>
+         <button type="button" id="doCreateButton" onclick="doCreate()">Create</button>
+         <button type="button" id="doUpdateButton" onclick="doUpdate()">Update</button>
+      </div>
 
-         <div id="transactionsTable" style="display: none;">
-            <h2>Transactions</h2>
-            <table class="table">
-               <thead>
-                  <tr>
-                     <th>Description</th>
-                     <th>Amount</th>
-                     <th>Type</th>
-                     <th>Update</th>
-                     <th>Delete</th>
-                  </tr>
-               </thead>
-               <tbody></tbody>
-            </table>
+      <div id="transactionsTableDiv" style="display: none;">
+         <h2>Transactions</h2>
+         <table id="transactionsTable" border="2">
+            <thead>
+               <tr>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Type</th>
+                  <th>Update</th>
+                  <th>Delete</th>
+               </tr>
+            </thead>
+            <tbody></tbody>
+         </table>
 
             <!-- this is the button to show the Create/Update form -->
-            <div><button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>
-         </div>
+         <div><button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>
+      </div>
 
 
       <script>
          // Function to show the create form and hide everything else
-         function showCreate(){
-            // Hide the "Create New" button
-            document.getElementById('showCreateButton').style.display="none" // Hide the button
-            document.getElementById('transactionsTable').style.display="none" // Hide the table
-            document.getElementById('createUpdateForm').style.display="block" // Show the create form
-
-            document.getElementById('createLabel').style.display="inline" // Show Create label
-            document.getElementById('updateLabel').style.display="none" // hide update label
-
-            document.getElementById('doCreateButton').style.display="block" // Show Create button
-            document.getElementById('doUpdateButton').style.display="none" // Hide Update button
-      }
-         function showViewAll(){
-            document.getElementById('showCreateButton').style.display="block" // Show the button
-            document.getElementById('transactionsTable').style.display="block" // Show tansactions table
-            document.getElementById('createUpdateForm').style.display="none" // Hide the form
-      }
-
+         function showCreate() {
+             document.getElementById('showCreateButton').style.display = "none"; // Hide the "Create New" button
+             document.getElementById('transactionsTableDiv').style.display = "none"; // Hide the transactions table
+             document.getElementById('createUpdateForm').style.display = "block"; // Show the create form
+ 
+             document.getElementById('createLabel').style.display = "inline"; // Show Create label
+             document.getElementById('updateLabel').style.display = "none"; // Hide Update label
+ 
+             document.getElementById('doCreateButton').style.display = "block"; // Show Create button
+             document.getElementById('doUpdateButton').style.display = "none"; // Hide Update button
+         }
+ 
+         // Function to show the transactions table and hide the form
+         function showViewAll() {
+             document.getElementById('showCreateButton').style.display = "block"; // Show Create button
+             document.getElementById('transactionsTableDiv').style.display = "block"; // Show the transactions table
+             document.getElementById('createUpdateForm').style.display = "none"; // Hide the form
+         }
+ 
          // Function to create a new transaction
          function doCreate() {
-            var form = document.getElementById('createUpdateForm');
-            var transaction = {
-               description: form.querySelector('input[name="description"]').value,
-               amount: form.querySelector('input[name="amount"]').value,
-               transaction_type: form.querySelector('select[name="transaction-type"]').value
-            };
-            addTransactiontoTable(transaction);
-            clearForm();
-            showViewAll()
-            
-            
+             var form = document.getElementById('createUpdateForm');
+             var transaction = {
+                 description: form.querySelector('input[name="description"]').value,
+                 amount: form.querySelector('input[name="amount"]').value,
+                 transaction_type: form.querySelector('select[name="transaction-type"]').value
+             };
+ 
+             // Generate a simple ID for the transaction (e.g., using timestamp)
+             transaction.id = new Date().getTime(); // Unique ID based on timestamp
+ 
+             // Add the transaction to the table
+             addTransactionToTable(transaction);
+ 
+             // Clear the form and show the table
+             clearForm();
+             showViewAll();
          }
-      </script>
+ 
+         // Function to add a new transaction to the table
+         function addTransactionToTable(transaction) {
+             var tableElement = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0];
+             var rowElement = tableElement.insertRow();
+ 
+             // Set the ID of the row (use timestamp as ID)
+             rowElement.setAttribute('id', transaction.id);
+ 
+             // Insert transaction details into the table row
+             rowElement.insertCell(0).innerHTML = transaction.description;
+             rowElement.insertCell(1).innerHTML = transaction.amount;
+             rowElement.insertCell(2).innerHTML = transaction.transaction_type;
+ 
+             // Add Update and Delete buttons
+             rowElement.insertCell(3).innerHTML = '<button onclick="showUpdate(this)">Update</button>';
+             rowElement.insertCell(4).innerHTML = '<button onclick="doDelete(this)">Delete</button>';
+         }
+ 
+         // Function to clear the form after creating or updating a transaction
+         function clearForm() {
+             var form = document.getElementById('createUpdateForm');
+             form.querySelector('input[name="description"]').value = '';
+             form.querySelector('input[name="amount"]').value = '';
+             form.querySelector('select[name="transaction-type"]').value = 'income';
+         }
+ 
+         // Function to delete a transaction
+         function doDelete(r) {
+             var rowElement = r.parentNode.parentNode;
+             rowElement.remove(); // Remove the row from the table
+         }
+     </script>
 
       
     </body>
