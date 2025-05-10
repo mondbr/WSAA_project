@@ -6,68 +6,27 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
-      <!-- https://www.w3schools.com/w3css/w3css_containers.asp -->
-      <div class="container">
          <h1>Personal Budget Tracker</h1>
       
-         <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
-
-         <div id = "transactionsTable" style="display:none;">
-      
-
-            <h2>Actions</h2>
-      
-      
-            <form id="transaction-form">
-               <label for="description">Description:</label>
-               <input type="text" id="description"><br><br>
- 
-               <label for="amount">Amount:</label>
-               <input type="number" id="amount"><br><br>
- 
-               <label for="transaction-type">Transaction Type:</label>
-               <select id="transaction-type">
-                  <option value="income">Income</option>
-                  <option value="expense">Expense</option>
-               </select><br><br>
-         
-         
-               <div> <button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>
-            </form>
-            <div><button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>  
+         <div> 
+            <button id="showCreateButton" onclick="showCreate()">Create New</button>
          </div>
 
-         <h2>Transactions</h2>
-         <table id="transactionsTable" border="2">
-            <thead>
-               <tr>
-               <th>Description</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Update</th>
-                  <th>Delete</th>
-               </tr>
-            </thead>
-            <tbody></tbody>
-         </table>
-
-         <!-- Create/Update form (hidden by default) -->
-
-         <div id="createUpdateForm" style="display: none">
-            <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Transaction</h2>
+         <div id="createUpdateForm" style= "display: none;">
+            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
             <input type="hidden" name="id"/>
-            Description <input type="text" name="description" /><br/>
-            Amount <input type="number" name="amount"/> <br/>
-            Type <select name="transaction-type">
+            Description: <input type="text" name="description" /><br/>
+            Amount: <input type="number" name="amount"/> <br/>
+            Type: 
+            <select name="transaction-type">
                <option value="income">Income</option>
                <option value="expense">Expense</option>
             </select><br/>
-            <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
-            <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+            <button id="doCreateButton" onclick="doCreate()">Create</button>
+            <button id="doUpdateButton" onclick="doUpdate()">Update</button>
          </div>
-      
-   
-         <h2>Income and Expenses</h2>
+
+
       <script>
          function showCreate(){
             document.getElementById('showCreateButton').style.display="none"
