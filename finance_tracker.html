@@ -8,9 +8,13 @@
     <body>
          <h1>Personal Budget Tracker</h1>
       
+         <!-- this is the button to show the Create/Update form -->
+
          <div> 
             <button id="showCreateButton" onclick="showCreate()">Create New</button>
          </div>
+
+         <!-- this is the table to display transactions hidden at start-->
 
          <div id="createUpdateForm" style= "display: none;">
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
@@ -26,24 +30,60 @@
             <button id="doUpdateButton" onclick="doUpdate()">Update</button>
          </div>
 
+         <div id="transactionsTable" style="display: none;">
+            <h2>Transactions</h2>
+            <table class="table">
+               <thead>
+                  <tr>
+                     <th>Description</th>
+                     <th>Amount</th>
+                     <th>Type</th>
+                     <th>Update</th>
+                     <th>Delete</th>
+                  </tr>
+               </thead>
+               <tbody></tbody>
+            </table>
+
+            <!-- this is the button to show the Create/Update form -->
+            <div><button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>
+         </div>
+
 
       <script>
+         // Function to show the create form and hide everything else
          function showCreate(){
-            document.getElementById('showCreateButton').style.display="none"
-            document.getElementById('bookTable').style.display="none"
-            document.getElementById('createUpdateForm').style.display="block"
+            // Hide the "Create New" button
+            document.getElementById('showCreateButton').style.display="none" // Hide the button
+            document.getElementById('transactionsTable').style.display="none" // Hide the table
+            document.getElementById('createUpdateForm').style.display="block" // Show the create form
 
-            document.getElementById('createLabel').style.display="inline"
-            document.getElementById('updateLabel').style.display="none"
+            document.getElementById('createLabel').style.display="inline" // Show Create label
+            document.getElementById('updateLabel').style.display="none" // hide update label
 
-            document.getElementById('doCreateButton').style.display="block"
-            document.getElementById('doUpdateButton').style.display="none"
+            document.getElementById('doCreateButton').style.display="block" // Show Create button
+            document.getElementById('doUpdateButton').style.display="none" // Hide Update button
       }
          function showViewAll(){
-            document.getElementById('showCreateButton').style.display="block"
-            document.getElementById('bookTable').style.display="block"
-            document.getElementById('createUpdateForm').style.display="none"
+            document.getElementById('showCreateButton').style.display="block" // Show the button
+            document.getElementById('transactionsTable').style.display="block" // Show tansactions table
+            document.getElementById('createUpdateForm').style.display="none" // Hide the form
       }
+
+         // Function to create a new transaction
+         function doCreate() {
+            var form = document.getElementById('createUpdateForm');
+            var transaction = {
+               description: form.querySelector('input[name="description"]').value,
+               amount: form.querySelector('input[name="amount"]').value,
+               transaction_type: form.querySelector('select[name="transaction-type"]').value
+            };
+            addTransactiontoTable(transaction);
+            clearForm();
+            showViewAll()
+            
+            
+         }
       </script>
 
       
