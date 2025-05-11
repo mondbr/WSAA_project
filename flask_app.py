@@ -46,6 +46,13 @@ def get_transaction_by_id(id):
         abort(404, description="Transaction not found")
 
 
+@app.route('/transactions', methods=["GET"])
+@cross_origin()
+def get_transactions():
+    transactions = TransactionDAO.get_all()
+    return jsonify(transactions)
+
+
 
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"description\":\"Salary\",\"amount\":5000.00,\"transaction_type\":\"income\"}" http://127.0.0.1:5000/transactions
 @app.route('/transactions', methods=['POST'])

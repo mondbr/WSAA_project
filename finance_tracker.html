@@ -14,6 +14,10 @@
          <button id="showCreateButton" onclick="showCreate()">Create New</button>
       </div>
 
+      <div>
+         <button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button>
+      </div>
+
          <!-- this is the table to display transactions hidden at start-->
 
       <div id="createUpdateForm" style= "display: none;">
@@ -44,8 +48,7 @@
             <tbody></tbody>
          </table>
 
-            <!-- this is the button to show the Create/Update form -->
-         <div><button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button></div>
+         
       </div>
 
 
@@ -53,12 +56,9 @@
          // Function to show the create form and hide everything else
          function showCreate() {
              document.getElementById('showCreateButton').style.display = "none"; // Hide the Create New button
-             document.getElementById('transactionsTableDiv').style.display = "none"; // Hide the transactions table
              document.getElementById('createUpdateForm').style.display = "block"; // Show the create form
- 
              document.getElementById('createLabel').style.display = "inline"; // Show Create label
              document.getElementById('updateLabel').style.display = "none"; // Hide Update label
- 
              document.getElementById('doCreateButton').style.display = "block"; // Show Create button
              document.getElementById('doUpdateButton').style.display = "none"; // Hide Update button
          }
@@ -66,8 +66,39 @@
          // Function to show the transactions table and hide the form
          function showViewAll() {
              document.getElementById('showCreateButton').style.display = "block"; // Show Create button
-             document.getElementById('transactionsTableDiv').style.display = "block"; // Show the transactions table
              document.getElementById('createUpdateForm').style.display = "none"; // Hide the form
+             document.getElementById('transactionsTableDiv').style.display = "block"; // Show the transactions table
+             
+             fetchTransactions(); // Fetch transactions from the server
+         }
+
+         
+         // function to show all transactions from the database
+         function fetchTransactions() {
+            $.ajax({
+               url: "http://localhost:5000/transactions",
+               method: "GET",
+               dataType: "json",
+               success: function(result) {
+                  var tableBody = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0];
+                  tableBody.innerHTML = ""; // Clear the table body
+
+                  result.forEach(function(transaction) {
+                     var rowElement = tableBody.insertRow();
+                     rowElement.setAttribute('id', transaction.id); // Set the ID of the row
+                     rowElement.insertCell(0).innerHTML = transaction.description;
+                     rowElement.insertCell(1).innerHTML = transaction.amount;
+                     rowElement.insertCell(2).innerHTML = transaction.transaction_type;
+                     rowElement.insertCell(3).innerHTML = '<button onclick="showUpdate(this)">Update</button>';
+                     rowElement.insertCell(4).innerHTML = '<button onclick="doDelete(this)">Delete</button>';
+                  });
+                  
+               },
+               error: function(xhr, status, error) {
+                  console.log("Error: " + status + " msg:" + error);
+               }
+            });
+
          }
  
          // Function to create a new transaction
@@ -154,6 +185,9 @@
                 }
              });
          }
+
+
+         
      </script>
 
       
