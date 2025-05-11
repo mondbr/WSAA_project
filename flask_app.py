@@ -61,6 +61,7 @@ def home():
 
 def get_all_transactions():
     results = TransactionDAO.get_all()
+    print("Results: ", results)
     return jsonify(results)
 
 
@@ -93,19 +94,29 @@ def create_transaction():
     if not request.json:
         abort(400)
 
+    try:
+        amount = float(request.json['amount'])
+    except ValueError:
+        return jsonify({"error": "Invalid amount format"}), 400
+
     exchange_rate = get_exchange_rate()
     if exchange_rate is None:
         return jsonify({"error": "Failed to fetch exchange rate"}), 500
     
+   
+    
+    #limit the amounts to decimal places
+    amount_in_usd = round(amount * exchange_rate, 2) # Convert amount to USD using the exchange rate
+    exchange_rate = round(exchange_rate, 4)
+    
     transaction = {
         "description": request.json['description'],
-        "amount": request.json['amount'],
+        "amount": amount,
         "transaction_type": request.json['transaction_type'],
-        "amount_in_usd": request.json['amount'] * exchange_rate, # Convert amount to USD using the exchange rate
+        "amount_in_usd": amount_in_usd, 
+        "exchange_rate": exchange_rate # Store the exchange rate used for conversion
         
     }
-
-
     added_transaction = TransactionDAO.create(transaction)
 
     return jsonify(added_transaction), 201

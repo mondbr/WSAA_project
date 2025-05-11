@@ -47,6 +47,8 @@
                   <th>Description</th>
                   <th>Amount</th>
                   <th>Type</th>
+                  <th>Amount in USD</th>  <!-- New Column -->
+                  <th>Exchange Rate</th> <!-- New Column -->
                   <th>Update</th>
                   <th>Delete</th>
                </tr>
@@ -108,13 +110,16 @@
                   tableBody.innerHTML = ""; // Clear the table body to avoid appending old data https://stackoverflow.com/questions/15866451/how-to-clear-table-body-in-javascript
 
                   result.forEach(function(transaction) {
+                     
                      var rowElement = tableBody.insertRow(); // insert new row https://stackoverflow.com/questions/15866451/how-to-insert-row-at-end-of-table-with-htmltableelement-insertrow
                      rowElement.setAttribute('id', transaction.id); // Set the ID of the row https://www.w3schools.com/jsref/met_element_setattribute.asp
                      rowElement.insertCell(0).innerHTML = transaction.description; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
                      rowElement.insertCell(1).innerHTML = transaction.amount; // insert amount
                      rowElement.insertCell(2).innerHTML = transaction.transaction_type; // insert transaction type
-                     rowElement.insertCell(3).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
-                     rowElement.insertCell(4).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
+                     rowElement.insertCell(3).innerHTML = transaction.amount_in_usd || 'N/A'; // insert exchange rate
+                     rowElement.insertCell(4).innerHTML = transaction.exchange_rate|| 'N/A'; // insert exchange rate
+                     rowElement.insertCell(5).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
+                     rowElement.insertCell(6).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
                   });
                   
                },
@@ -148,6 +153,7 @@
                dataType: "json",
                contentType: "application/json",
                success:function(result){
+                  console.log(result); // log the result to check the data structure
                   transaction.id = result.id; 
                   addTransactionToTable(transaction); // Add the transaction to the table
                   clearForm(); // Clear the form
@@ -160,7 +166,8 @@
          }
  
              
- 
+         // function to update a transaction
+         
 
  
          // Function to add a new transaction to the table
@@ -236,8 +243,8 @@
     });
 }
 
-// Call the function to get the exchange rate
-getCurrencyExchangeRate();
+                  // Call the function to get the exchange rate
+                  getCurrencyExchangeRate();
 
 
 
