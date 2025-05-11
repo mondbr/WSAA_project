@@ -52,7 +52,7 @@
       <script>
          // Function to show the create form and hide everything else
          function showCreate() {
-             document.getElementById('showCreateButton').style.display = "none"; // Hide the "Create New" button
+             document.getElementById('showCreateButton').style.display = "none"; // Hide the Create New button
              document.getElementById('transactionsTableDiv').style.display = "none"; // Hide the transactions table
              document.getElementById('createUpdateForm').style.display = "block"; // Show the create form
  
@@ -78,24 +78,42 @@
                  amount: form.querySelector('input[name="amount"]').value,
                  transaction_type: form.querySelector('select[name="transaction-type"]').value
              };
- 
-             // Generate a simple ID for the transaction (e.g., using timestamp)
-             transaction.id = new Date().getTime(); // Unique ID based on timestamp
- 
-             // Add the transaction to the table
-             addTransactionToTable(transaction);
- 
-             // Clear the form and show the table
-             clearForm();
-             showViewAll();
+
+             // calling the function to add the transaction to the table via Ajac
+             createTransactionAjax(transaction);
          }
+         // Function to send the transaction to the server via ajax
+         function createTransactionAjax(transaction) {
+            console.log(JSON.stringify(transaction)); 
+
+            $.ajax({
+               url: "http://localhost:5000/transactions",
+               method: "POST",
+               data: JSON.stringify(transaction),
+               dataType: "json",
+               contentType: "application/json",
+               success:function(result){
+                  transaction.id = result.id; 
+                  addTransactionToTable(transaction); // Add the transaction to the table
+                  clearForm(); // Clear the form
+                  showViewAll(); // Show the transactions table
+               },
+               error:function(xhr, status, error){
+                  console.log("Error: "+ status+ "msg:" + error);
+               }
+            });
+         }
+ 
+             
+ 
+
  
          // Function to add a new transaction to the table
          function addTransactionToTable(transaction) {
              var tableElement = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0];
              var rowElement = tableElement.insertRow();
  
-             // Set the ID of the row (use timestamp as ID)
+             // Set the ID of the row 
              rowElement.setAttribute('id', transaction.id);
  
              // Insert transaction details into the table row
