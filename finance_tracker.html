@@ -2,40 +2,46 @@
     <head>
         <title> Personal Budget Tracker </title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-       
+        <!--bootstrap CSS for styling, referred to AndrewBeatty code-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
+      <!-- this is the title of the page -->
       <h1>Personal Budget Tracker</h1>
       
       <!-- this is the button to show the Create/Update form -->
-
       <div> 
          <button id="showCreateButton" onclick="showCreate()">Create New</button>
       </div>
 
-      <div>
+
+      <!-- this is the button to show all transactions -->
+      <div id="viewAllButtonDiv" style="display: block;">
          <button id="showViewAllButton" onclick="showViewAll()">View All Transactions</button>
       </div>
 
-         <!-- this is the table to display transactions hidden at start-->
-
+         <!-- this is the table to display transactions hidden at start, it is for creating anf updating transaction-->
       <div id="createUpdateForm" style= "display: none;">
          <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
          Description: <input type="text" name="description" /><br/>
          Amount: <input type="number" name="amount"/> <br/>
+         <!--dropdown for transaction type https://www.w3schools.com/tags/tag_select.asp-->
          Type: 
          <select name="transaction-type">
             <option value="income">Income</option>
             <option value="expense">Expense</option>
          </select><br/>
+
+         <!--buttons to create or update transactiion-->
          <button type="button" id="doCreateButton" onclick="doCreate()">Create</button>
          <button type="button" id="doUpdateButton" onclick="doUpdate()">Update</button>
       </div>
 
+      <!--display list of transactions, referred to books in WSAA course-->
       <div id="transactionsTableDiv" style="display: none;">
          <h2>Transactions</h2>
-         <table id="transactionsTable" border="2">
+         <!--table to display transactions in table with bold border https://www.w3schools.com/html/html_table_borders.asp-->
+         <table id="transactionsTable" border="2 ">
             <thead>
                <tr>
                   <th>Description</th>
@@ -51,11 +57,19 @@
          
       </div>
 
+      <!--adding back button https://www.w3schools.com/tags/tag_button.asp-->
+      <div id="backButtonDiv" style="display: none;">
+         <button id="backButton" onclick="goBack()">Go back</button>
+      </div>
+
 
       <script>
+         //div element to be displayed or not https://www.w3schools.com/jsref/prop_style_display.asp
+
          // Function to show the create form and hide everything else
          function showCreate() {
              document.getElementById('showCreateButton').style.display = "none"; // Hide the Create New button
+             document.getElementById('viewAllButtonDiv').style.display = "none"; // Hide View All button
              document.getElementById('createUpdateForm').style.display = "block"; // Show the create form
              document.getElementById('createLabel').style.display = "inline"; // Show Create label
              document.getElementById('updateLabel').style.display = "none"; // Hide Update label
@@ -68,40 +82,50 @@
              document.getElementById('showCreateButton').style.display = "block"; // Show Create button
              document.getElementById('createUpdateForm').style.display = "none"; // Hide the form
              document.getElementById('transactionsTableDiv').style.display = "block"; // Show the transactions table
+             document.getElementById("backButtonDiv").style.display = "block"; // show the back button
+             document.getElementById('viewAllButtonDiv').style.display = "none"; // Hide View All button
              
              fetchTransactions(); // Fetch transactions from the server
          }
 
-         
-         // function to show all transactions from the database
+         // function to go back to the main page
+         function goBack() {
+            document.getElementById('showCreateButton').style.display = "block"; // Show Create button
+            document.getElementById('createUpdateForm').style.display = "none"; // Hide the form
+            document.getElementById('transactionsTableDiv').style.display = "none"; // Hide the transactions table
+            document.getElementById("backButtonDiv").style.display = "none"; // hide the back button
+            document.getElementById('viewAllButtonDiv').style.display = "block"; // Show the View All Transactions button again
+         }
+         // function to show all transactions from the database, referred to AndrewBeatty code
          function fetchTransactions() {
             $.ajax({
                url: "http://localhost:5000/transactions",
-               method: "GET",
+               method: "GET", // GET method to fetch all transactions
+               //data: JSON.stringify(transaction), // data to be sent to the server
                dataType: "json",
-               success: function(result) {
-                  var tableBody = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0];
-                  tableBody.innerHTML = ""; // Clear the table body
+               success: function(result) { // call back function if the request is succesful https://how.dev/answers/what-is-the-ajax-success-method
+                  var tableBody = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0]; // get the table body (tbody) of the element Transaction Table to insert rowns  https://www.w3schools.com/jsref/met_document_getelementsbytagname.asp
+                  tableBody.innerHTML = ""; // Clear the table body to avoid appending old data https://stackoverflow.com/questions/15866451/how-to-clear-table-body-in-javascript
 
                   result.forEach(function(transaction) {
-                     var rowElement = tableBody.insertRow();
-                     rowElement.setAttribute('id', transaction.id); // Set the ID of the row
-                     rowElement.insertCell(0).innerHTML = transaction.description;
-                     rowElement.insertCell(1).innerHTML = transaction.amount;
-                     rowElement.insertCell(2).innerHTML = transaction.transaction_type;
-                     rowElement.insertCell(3).innerHTML = '<button onclick="showUpdate(this)">Update</button>';
-                     rowElement.insertCell(4).innerHTML = '<button onclick="doDelete(this)">Delete</button>';
+                     var rowElement = tableBody.insertRow(); // insert new row https://stackoverflow.com/questions/15866451/how-to-insert-row-at-end-of-table-with-htmltableelement-insertrow
+                     rowElement.setAttribute('id', transaction.id); // Set the ID of the row https://www.w3schools.com/jsref/met_element_setattribute.asp
+                     rowElement.insertCell(0).innerHTML = transaction.description; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
+                     rowElement.insertCell(1).innerHTML = transaction.amount; // insert amount
+                     rowElement.insertCell(2).innerHTML = transaction.transaction_type; // insert transaction type
+                     rowElement.insertCell(3).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
+                     rowElement.insertCell(4).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
                   });
                   
                },
                error: function(xhr, status, error) {
-                  console.log("Error: " + status + " msg:" + error);
+                  console.log("Error: " + status + " msg:" + error); // log the error message, referred to AndrewBeatty code
                }
             });
 
          }
  
-         // Function to create a new transaction
+         // Function to create a new transaction, referred to WSAA code
          function doCreate() {
              var form = document.getElementById('createUpdateForm');
              var transaction = {
@@ -119,7 +143,7 @@
 
             $.ajax({
                url: "http://localhost:5000/transactions",
-               method: "POST",
+               method: "POST", // POST method to create a new transaction
                data: JSON.stringify(transaction),
                dataType: "json",
                contentType: "application/json",
@@ -175,7 +199,7 @@
          // delete a transaction via ajax
                $.ajax({
                   url: "http://localhost:5000/transactions" + "/" + transactionId,
-                  method: "DELETE",
+                  method: "DELETE", // DELETE method to delete a transaction
                   success: function() {
                    rowElement.remove(); // Remove the row from the table and show pop up message https://datatables.net/forums/discussion/42588/delete-specific-row-from-datatables
                      alert("Transaction deleted successfully");
