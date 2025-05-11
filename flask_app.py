@@ -132,10 +132,16 @@ def update_transaction(id):
     if not request.json:
         abort(400)
 
+    new_amount = request.json.get('amount', transaction['amount'])
+    get_exchange_rate = transaction['exchange_rate']
+    new_amount_in_usd = round(new_amount * get_exchange_rate, 2) # Convert amount to USD using the exchange rate
+
     updated_transaction = {
         "description": request.json.get('description', transaction['description']),
         "amount": request.json.get('amount', transaction['amount']),
         "transaction_type": request.json.get('transaction_type', transaction['transaction_type']),
+        "amount_in_usd": new_amount_in_usd,  # Update the amount in USD
+        "exchange_rate": get_exchange_rate  # Keep the same exchange rate
     }
     TransactionDAO.update(id, updated_transaction)
     return jsonify(updated_transaction)

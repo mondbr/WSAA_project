@@ -167,6 +167,28 @@
  
              
          // function to update a transaction
+         function showUpdate(id) {
+            var form = document.getElementById('createUpdateForm');
+            var transaction = {
+               amount: form.querySelector('input[name="amount"]').value,
+            }
+         };
+
+         $.ajax({
+            url: "http://localhost:5000/transactions" + "/" + transactionId,
+            method: "PUT", // PUT method to update a transaction
+            data: JSON.stringify(transaction),
+            dataType: "json",
+            contentType: "application/json",
+            success:function(result){
+               fetchTransactions();
+               goBack(); // Go back to the main page
+            },
+            error:function(xhr, status, error){
+               console.log("Error: "+ status+ "msg:" + error);
+            }
+         });
+         
          
 
  
