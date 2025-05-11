@@ -210,6 +210,37 @@
              });
          }
 
+         function getCurrencyExchangeRate() {
+         // Replace YOUR_API_KEY with your actual FreeCurrencyAPI key
+               const apiKey = 'YOUR_API_KEY';
+               const url = `https://api.freecurrencyapi.com/v1/latest?apikey=${apiKey}&base_currency=EUR`; // EUR is the base currency, modify as needed
+
+               $.ajax({
+                  url: url,
+                  method: 'GET',
+                  success: function(response) {
+                  // Log the result to check the data structure
+                  console.log(response);
+
+                  // Access the exchange rate for USD
+                  const eurToUsdRate = response.data.USD; // This is assuming the API responds with data.USD
+
+                  // Log the rate
+                  console.log('Exchange rate EUR to USD:', eurToUsdRate);
+
+                  // Now you can use this rate in your calculations, like for creating transactions
+   },
+                  error: function(xhr, status, error) {
+                     console.log('Error fetching exchange rate:', error);
+        }
+    });
+}
+
+// Call the function to get the exchange rate
+getCurrencyExchangeRate();
+
+
+
 
          
      </script>

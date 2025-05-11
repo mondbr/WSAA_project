@@ -6,11 +6,40 @@ import json
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS, cross_origin
 from TransactionDAO import TransactionDAO
+# this is a module that handle currency exchange https://github.com/everapihq/freecurrencyapi-python
+import freecurrencyapi
+# this is to handle api key (reffered to assignment 04)
+
+from config import config as cfg
+
+api_key = cfg["MYAPIKEY"]
+client = freecurrencyapi.Client(api_key)
+
+print(client.status()) # check if the API key is valid
+
+
 
 app = Flask(__name__)
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
+# added function to get exchange rate from EUR TO USD
+def get_exchange_rate():
+    try:
+        response = client.latest() #according to the documentation  https://github.com/everapihq/freecurrencyapi-python
+        if 'EUR' in response['data']:
+            exchange_rate = 1 / response['data']['EUR'] # get the exchange rate from EUR to USD as USD is always 1, so divide 1 by the exchange rate of EUR
+            
+            return exchange_rate
+        else:
+            # If the response does not contain 'USD', handle it accordingly
+            print("USD not found in the response")
+            return None
+        
+    except Exception as e:
+        print("Error fetching exchange rate: " + str(e))
+        return None
 
 
 #app = Flask(__name__, static_url_path='', static_folder='.')
@@ -54,17 +83,29 @@ def get_transactions():
 
 
 
+
+        
+
 # curl -i -H "Content-Type:application/json" -X POST -d "{\"description\":\"Salary\",\"amount\":5000.00,\"transaction_type\":\"income\"}" http://127.0.0.1:5000/transactions
 @app.route('/transactions', methods=['POST'])
 @cross_origin()
 def create_transaction():
     if not request.json:
         abort(400)
+
+    exchange_rate = get_exchange_rate()
+    if exchange_rate is None:
+        return jsonify({"error": "Failed to fetch exchange rate"}), 500
+    
     transaction = {
         "description": request.json['description'],
         "amount": request.json['amount'],
         "transaction_type": request.json['transaction_type'],
+        "amount_in_usd": request.json['amount'] * exchange_rate, # Convert amount to USD using the exchange rate
+        
     }
+
+
     added_transaction = TransactionDAO.create(transaction)
 
     return jsonify(added_transaction), 201
