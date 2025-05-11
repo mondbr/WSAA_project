@@ -137,7 +137,22 @@
          // Function to delete a transaction
          function doDelete(r) {
              var rowElement = r.parentNode.parentNode;
-             rowElement.remove(); // Remove the row from the table
+             var transactionId = rowElement.getAttribute('id'); // Get the ID of the transaction
+             
+         
+
+         // delete a transaction via ajax
+               $.ajax({
+                  url: "http://localhost:5000/transactions" + "/" + transactionId,
+                  method: "DELETE",
+                  success: function() {
+                   rowElement.remove(); // Remove the row from the table and show pop up message https://datatables.net/forums/discussion/42588/delete-specific-row-from-datatables
+                     alert("Transaction deleted successfully");
+                },
+                  error: function(xhr, status, error) {
+                   console.log("Error: " + status + " msg:" + error);
+                }
+             });
          }
      </script>
 
