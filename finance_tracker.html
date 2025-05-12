@@ -22,7 +22,9 @@
 
          <!-- this is the table to display transactions hidden at start, it is for creating anf updating transaction-->
       <div id="createUpdateForm" style= "display: none;">
+         
          <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h2>
+         <input type="hidden" name="id"/>
          Description: <input type="text" name="description" /><br/>
          Amount: <input type="number" name="amount"/> <br/>
          <!--dropdown for transaction type https://www.w3schools.com/tags/tag_select.asp-->
@@ -44,6 +46,7 @@
          <table id="transactionsTable" border="2 ">
             <thead>
                <tr>
+                  <th>ID</th> <!-- New Column to see ID -->
                   <th>Description</th>
                   <th>Amount</th>
                   <th>Type</th>
@@ -104,9 +107,9 @@
             var transactionId = rowElement.getAttribute('id'); // Get the ID of the transaction
             
             document.querySelector('input[name="id"]').value = transactionId; // Set the ID in the form
-            document.querySelector('input[name="description"]').value = rowElement.cells[0].innerHTML; // Set the description in the form
-            document.querySelector('input[name="amount"]').value = rowElement.cells[1].innerHTML; // Set the amount in the form
-            document.querySelector('select[name="transaction-type"]').value = rowElement.cells[2].innerHTML; // Set the transaction type in the form
+            document.querySelector('input[name="description"]').value = rowElement.cells[1].innerHTML; // Set the description in the form
+            document.querySelector('input[name="amount"]').value = rowElement.cells[2].innerHTML; // Set the amount in the form
+            document.querySelector('select[name="transaction-type"]').value = rowElement.cells[3].innerHTML; // Set the transaction type in the form
            
 
          }
@@ -134,13 +137,14 @@
                      
                      var rowElement = tableBody.insertRow(); // insert new row https://stackoverflow.com/questions/15866451/how-to-insert-row-at-end-of-table-with-htmltableelement-insertrow
                      rowElement.setAttribute('id', transaction.id); // Set the ID of the row https://www.w3schools.com/jsref/met_element_setattribute.asp
-                     rowElement.insertCell(0).innerHTML = transaction.description; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
-                     rowElement.insertCell(1).innerHTML = transaction.amount; // insert amount
-                     rowElement.insertCell(2).innerHTML = transaction.transaction_type; // insert transaction type
-                     rowElement.insertCell(3).innerHTML = transaction.amount_in_usd || 'N/A'; // insert exchange rate
-                     rowElement.insertCell(4).innerHTML = transaction.exchange_rate|| 'N/A'; // insert exchange rate
-                     rowElement.insertCell(5).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
-                     rowElement.insertCell(6).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
+                     rowElement.insertCell(0).innerHTML = transaction.id; // insert ID
+                     rowElement.insertCell(1).innerHTML = transaction.description; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
+                     rowElement.insertCell(2).innerHTML = transaction.amount; // insert amount
+                     rowElement.insertCell(3).innerHTML = transaction.transaction_type; // insert transaction type
+                     rowElement.insertCell(4).innerHTML = transaction.amount_in_usd || 'N/A'; // insert exchange rate
+                     rowElement.insertCell(5).innerHTML = transaction.exchange_rate|| 'N/A'; // insert exchange rate
+                     rowElement.insertCell(6).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
+                     rowElement.insertCell(7).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
                   });
                   
                },
@@ -191,37 +195,40 @@
          function doUpdate(id) {
 
             var form = document.getElementById('createUpdateForm');
+
             var transaction = {
                id: form.querySelector('input[name="id"]').value, // Get the ID from the form
                description: form.querySelector('input[name="description"]').value,
-               amount: form.querySelector('input[name="amount"]').value,
+               amount: parseFloat(form.querySelector('input[name="amount"]').value), //https://www.w3schools.com/jsref/jsref_parsefloat.asp
                transaction_type: form.querySelector('select[name="transaction-type"]').value
-            }
-         };
+            };
+         
+
+         
 
             $.ajax({
-               url: "http://localhost:5000/transactions" + "/" + transactionId,
+               url: "http://localhost:5000/transactions" + "/" + transaction.id,
                method: "PUT", // PUT method to update a transaction
                data: JSON.stringify(transaction),
                dataType: "json",
                contentType: "application/json",
                success:function(result){
                // update the row in the table
-                  var rowElement = document.getElementById(transactionId);
+                  var rowElement = document.getElementById(transaction.id);
                   rowElement.cells[0].innerHTML = transaction.description; // Update description
                   rowElement.cells[1].innerHTML = transaction.amount; // Update amount
                   rowElement.cells[2].innerHTML = transaction.transaction_type; // Update transaction type
 
                   clearForm(); // Clear the form
                   showViewAll(); // Show the transactions table
-                  goBack(); // Go back to the main page
-                  },
+                  
+            },
             error:function(xhr, status, error){
                console.log("Error: "+ status+ "msg:" + error);
                   }
             });
          
-         
+         }
 
  
          // Function to add a new transaction to the table
