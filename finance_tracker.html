@@ -90,6 +90,27 @@
              fetchTransactions(); // Fetch transactions from the server
          }
 
+         // Function to show the update form 
+         function showUpdate(buttonElement) {
+            document.getElementById('showCreateButton').style.display = "none"; // Hide Create button
+            document.getElementById('createUpdateForm').style.display = "block"; // show the form
+            document.getElementById('transactionsTableDiv').style.display = "none"; // Hide the transactions table
+            document.getElementById('createLabel').style.display = "none"; // hide Create label
+            document.getElementById('updateLabel').style.display = "inline"; // show Update label
+            document.getElementById('doCreateButton').style.display = "none"; // Show Create button
+            document.getElementById('doUpdateButton').style.display = "block"; // Hide Update button
+
+            var rowElement = buttonElement.parentNode.parentNode; // Get the row element of the clicked button
+            var transactionId = rowElement.getAttribute('id'); // Get the ID of the transaction
+            
+            document.querySelector('input[name="id"]').value = transactionId; // Set the ID in the form
+            document.querySelector('input[name="description"]').value = rowElement.cells[0].innerHTML; // Set the description in the form
+            document.querySelector('input[name="amount"]').value = rowElement.cells[1].innerHTML; // Set the amount in the form
+            document.querySelector('select[name="transaction-type"]').value = rowElement.cells[2].innerHTML; // Set the transaction type in the form
+           
+
+         }
+
          // function to go back to the main page
          function goBack() {
             document.getElementById('showCreateButton').style.display = "block"; // Show Create button
@@ -167,27 +188,38 @@
  
              
          // function to update a transaction
-         function showUpdate(id) {
+         function doUpdate(id) {
+
             var form = document.getElementById('createUpdateForm');
             var transaction = {
+               id: form.querySelector('input[name="id"]').value, // Get the ID from the form
+               description: form.querySelector('input[name="description"]').value,
                amount: form.querySelector('input[name="amount"]').value,
+               transaction_type: form.querySelector('select[name="transaction-type"]').value
             }
          };
 
-         $.ajax({
-            url: "http://localhost:5000/transactions" + "/" + transactionId,
-            method: "PUT", // PUT method to update a transaction
-            data: JSON.stringify(transaction),
-            dataType: "json",
-            contentType: "application/json",
-            success:function(result){
-               fetchTransactions();
-               goBack(); // Go back to the main page
-            },
+            $.ajax({
+               url: "http://localhost:5000/transactions" + "/" + transactionId,
+               method: "PUT", // PUT method to update a transaction
+               data: JSON.stringify(transaction),
+               dataType: "json",
+               contentType: "application/json",
+               success:function(result){
+               // update the row in the table
+                  var rowElement = document.getElementById(transactionId);
+                  rowElement.cells[0].innerHTML = transaction.description; // Update description
+                  rowElement.cells[1].innerHTML = transaction.amount; // Update amount
+                  rowElement.cells[2].innerHTML = transaction.transaction_type; // Update transaction type
+
+                  clearForm(); // Clear the form
+                  showViewAll(); // Show the transactions table
+                  goBack(); // Go back to the main page
+                  },
             error:function(xhr, status, error){
                console.log("Error: "+ status+ "msg:" + error);
-            }
-         });
+                  }
+            });
          
          
 

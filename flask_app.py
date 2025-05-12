@@ -133,7 +133,7 @@ def update_transaction(id):
         abort(400)
 
     new_amount = request.json.get('amount', transaction['amount'])
-    get_exchange_rate = transaction['exchange_rate']
+    get_exchange_rate = float(transaction['exchange_rate'])
     new_amount_in_usd = round(new_amount * get_exchange_rate, 2) # Convert amount to USD using the exchange rate
 
     updated_transaction = {
