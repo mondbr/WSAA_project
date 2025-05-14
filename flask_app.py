@@ -8,13 +8,16 @@ from flask_cors import CORS, cross_origin
 from TransactionDAO import TransactionDAO
 # this is a module that handle currency exchange https://github.com/everapihq/freecurrencyapi-python
 import freecurrencyapi
-# this is to handle api key (reffered to assignment 04)
 
+# this is to handle api key (reffered to assignment 04)
 from config import config as cfg
 
-api_key = cfg["MYAPIKEY"]
-client = freecurrencyapi.Client(api_key)
+# this is to handle api key (reffered to assignment 04)
 
+api_key = cfg["MYAPIKEY"]
+
+#according to the documentation  https://github.com/everapihq/freecurrencyapi-python
+client = freecurrencyapi.Client(api_key)
 print(client.status()) # check if the API key is valid
 
 
@@ -158,6 +161,14 @@ def delete_transaction(id):
 
     TransactionDAO.delete(id)
     return jsonify({"result": True})
+
+# api key 
+@app.route('/get-api-key', methods=['GET'])
+@cross_origin()
+def get_api_key():
+    api_key = cfg["MYAPIKEY"]
+    # Return the API key as a JSON response
+    return jsonify({"api_key": api_key})
 
 
 # running the flask app
