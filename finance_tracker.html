@@ -67,6 +67,10 @@
       <div id="totalDisplay" style="display: block;">
          <h3>Total Amount €: <span id="totalAmount"></span></h3>
       </div>
+
+      <div id="downloadButtonDiv" style="display: block;">
+         <button id="downloadButton" onclick="downloadCSV()">Download CSV</button>
+      </div>
       </div>
 
       <!--adding back button https://www.w3schools.com/tags/tag_button.asp-->
@@ -349,7 +353,9 @@
          }
          
 
-         
+         function downloadCSV() {
+               window.location.href = "http://localhost:5000/download_transactions"; //  download
+         }
      </script>
 
       

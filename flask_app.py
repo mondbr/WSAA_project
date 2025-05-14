@@ -12,8 +12,13 @@ import freecurrencyapi
 # this is to handle api key (reffered to assignment 04)
 from config import config as cfg
 
-# this is to handle api key (reffered to assignment 04)
+# this is to handle downloading the data from the database
+import csv # to handle csv files 
+from io import StringIO # to handle string data in memory https://www.geeksforgeeks.org/stringio-module-in-python/
+from flask import Response # to handle response http://flask.pocoo.org/docs/1.0/api/#flask.Response
 
+
+# this is to handle api key (reffered to assignment 04)
 api_key = cfg["MYAPIKEY"]
 
 #according to the documentation  https://github.com/everapihq/freecurrencyapi-python
@@ -169,6 +174,33 @@ def get_api_key():
     api_key = cfg["MYAPIKEY"]
     # Return the API key as a JSON response
     return jsonify({"api_key": api_key})
+
+
+# download the data from the database
+@app.route('/download_transactions', methods=['GET'])
+@cross_origin()
+def download_transactions():
+    # Fetch all transactions from the MySQL database using TransactionDAO
+    transactions = TransactionDAO.get_all()
+    
+    # Create a CSV output in memory http://flask.pocoo.org/docs/1.0/api/#flask.Response
+    si = StringIO() # https://stackoverflow.com/questions/56804363/sending-a-dataframe-using-flask-route-to-be-saved-as-csv
+    writer = csv.writer(si) # https://stackoverflow.com/questions/13120127/how-can-i-use-io-stringio-with-the-csv-module
+    
+    # Write the CSV header (column names)
+    writer.writerow(['ID', 'Description', 'Amount', 'Transaction Type', 'Amount in USD', 'Exchange Rate'])
+    
+    # Write each transaction's data
+    for transaction in transactions:
+        writer.writerow([transaction['id'], transaction['description'], transaction['amount'], 
+                         transaction['transaction_type'], transaction['amount_in_usd'], transaction['exchange_rate']])
+    
+    # Prepare the CSV for download
+    response = Response(si.getvalue(), mimetype='text/csv')
+    response.headers.set("Content-Disposition", "attachment", filename="transactions.csv")
+    
+    return response
+
 
 
 # running the flask app
