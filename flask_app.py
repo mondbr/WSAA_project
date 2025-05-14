@@ -195,7 +195,7 @@ def download_transactions():
         writer.writerow([transaction['id'], transaction['description'], transaction['amount'], 
                          transaction['transaction_type'], transaction['amount_in_usd'], transaction['exchange_rate']])
     
-    # Prepare the CSV for download
+    # Prepare the CSV for download https://stackoverflow.com/questions/30024948/flask-download-a-csv-file-on-clicking-a-button
     response = Response(si.getvalue(), mimetype='text/csv')
     response.headers.set("Content-Disposition", "attachment", filename="transactions.csv")
     
