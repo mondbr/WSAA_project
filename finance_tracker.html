@@ -314,6 +314,10 @@
                      var tableBody = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0]; // get the table body (tbody) of the element Transaction Table to insert rowns  https://www.w3schools.com/jsref/met_document_getelementsbytagname.asp
                      tableBody.innerHTML = ""; // Clear the table body to avoid appending old data https://stackoverflow.com/questions/15866451/how-to-clear-table-body-in-javascript
 
+                     result.sort(function(a, b) { // sort the transactions by date in descending order https://www.geeksforgeeks.org/sort-an-object-array-by-date-in-javascript/
+                        return new Date(b.date) - new Date(a.date);
+                     });
+
                      result.forEach(function(transaction) {
                         
                         var rowElement = tableBody.insertRow(); // insert new row https://stackoverflow.com/questions/15866451/how-to-insert-row-at-end-of-table-with-htmltableelement-insertrow
