@@ -230,17 +230,17 @@
             </table>
          
          <div class ="button-row">
-            <button id="calculateButton" onclick="calculateTotal()">Calculate your total</button> <!-- button to calculate the grand total of transactions -->
+            <button id="calculateButton" onclick="calculateTotal()">Calculate your Balance</button> <!-- button to calculate the grand total of transactions -->
             <button id="downloadButton" onclick="downloadCSV()">Download CSV</button> <!-- button to download transactions as CSV -->
             <button id="backButtonDiv" onclick="goBack()">Go back</button> <!-- button to go back to the main page -->
          </div>
          <!-- dding a button to calculate the grand total of transactions -->
-         <button id="calculateButton" onclick="calculateTotal()" style= "display: none;">Calculate your total</button>
+         <button id="calculateButton" onclick="calculateTotal()" style= "display: none;">Calculate your Balance</button>
 
          <div id="totalDisplay" style="display: block;">
-            <h3>Total Amount €: <span id="totalAmount"></span></h3>
+            <h3>Your balance is €: <span id="totalAmount"></span></h3>
          </div>
-         
+
          <!--adding back button https://www.w3schools.com/tags/tag_button.asp-->
          <div id="backButtonDiv" style="display: none;">
             <button id="backButton" onclick="goBack()">Go back</button>
