@@ -15,7 +15,7 @@
         <!--bootstrap CSS for styling, referred to AndrewBeatty code-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     
-    <!--https://www.w3schools.com/tags/tag_style.asp   //  https://www.w3schools.com/html/html_css.asp-->
+    <!--https://www.w3schools.com/tags/tag_style.asp   //  https://www.w3schools.com/html/html_css.asp // https://www.youtube.com/watch?v=HS4bvh_59hU&ab_channel=HTMLTutorials // https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics -->
       <style>
          /* body of the page */
          body {
@@ -99,6 +99,66 @@
             background-color: #15c9cf48; /* gray background on hover */
          }
 
+         /*style for new transaction form*/
+         #createUpdateForm {
+            margin-top: 20px; /* margin top for the form */
+            padding: 20px; /* padding for the form */
+            background-color: #f8f0f7; /* grey background */
+            border-radius: 12px; /* rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* shadow effect */
+         }
+
+         #createUpdateFrom h4 {
+            text-align: center; /* center h4 */
+            color: #4a3267; /* color of the header */
+            font-weight: 1000; /* header bold */
+         }
+
+         #createUpdateForm label { /* label style https://www.youtube.com/watch?v=HS4bvh_59hU&ab_channel=HTMLTutorials */
+            display: block; /* display label as block */
+            margin-top: 10px; /* margin bottom for labels */
+            font-weight: bold;
+
+         }
+
+         #createUpdateForm input, 
+         #createUpdateForm select {
+            width: 100%; /* full width of input and select */
+            padding: 10px; /* padding for input and select */
+            margin-top: 5px; /* margin top for input and select */
+            border-radius: 12px; /* rounded corners */
+            border: 2px solid #6f11da; /* blue border */
+         }
+      
+         #createUpdateForm button {
+            margin-top: 20px; /* margin top for buttons */
+            background-color: #4a3267; /* blue background */
+            color: white; /* white text */
+         }
+
+         #createUpdateForm button:hover {
+            background-color: #561cc0; /* blue background on hover */
+            color: #f0e443ce; /* yellow text on hover */
+         }
+
+         .button-row {
+            display: flex; /* display button row as flex */
+            justify-content: center; /* center buttons */
+            gap: 10px; /* gap between buttons */
+            margin-top: 20px; /* margin top for button row */
+         }
+
+         .button-row button {
+            background-color: #4a3267; /* blue background */
+            color: white; /* white tex
+            t */
+         }
+
+         .button-row button:hover {
+            background-color: #561cc0; /* blue background on hover */
+            color: #f0e443ce; /* yellow text on hover */
+         }
+
       </style>
     
    </head>
@@ -123,17 +183,28 @@
             <h4><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Transaction</h4>
             <input type="hidden" name="id"/>
 
-            Description: <input type="text" name="description" /><br/>
-            Amount: <input type="number" name="amount"/> <br/>
-            Type: <!--dropdown for transaction type https://www.w3schools.com/tags/tag_select.asp-->
+            <label for= "description">Description:</label> 
+            <input type="text" name="description"/>
+
+            <label for= "amount">Amount:</label>
+            <input type="number" name="amount"/>
+
+            <label for="transaction-type">Transaction Type:</label>
+
+            <!--dropdown for transaction type https://www.w3schools.com/tags/tag_select.asp-->
             <select name="transaction-type">
                <option value="income">Income</option>
                <option value="expense">Expense</option>
-            </select><br/>
+            </select>
+
+            <label for = "date">Transaction Date:</label>
+            <!--Adding transaction date-->
+            <input type="date" name="date" /> <!-- https://www.w3schools.com/tags/att_input_type_date.asp -->
 
             <!--buttons to create or update transactiion-->
             <button type="button" id="doCreateButton" onclick="doCreate()">Create</button>
             <button type="button" id="doUpdateButton" onclick="doUpdate()">Update</button>
+            <button type="button" onclick="goBack()">Go Back</button> <!-- button to go back to the main page -->
          </div>
 
          <!--display list of transactions, referred to books in WSAA course-->
@@ -142,33 +213,34 @@
             <!--table to display transactions in table with bold border https://www.w3schools.com/html/html_table_borders.asp-->
             <table id="transactionsTable" border="2 ">
                <thead>
-                     Date: <input type="date" name="date" /> <!-- see date https://www.w3schools.com/tags/att_input_type_date.asp -->
+                     
                   <tr>
                      <th>ID</th> <!-- New Column to see ID -->
+                     <th>Transaction Date</th> <!-- New Column to see date https://www.w3schools.com/tags/att_input_type_date.asp  -->
                      <th>Description</th>
                      <th>Amount EUR</th>
                      <th>Type</th>
                      <th>Amount in USD</th>  <!-- New Column -->
-                     <th>Exchange Rate EUR/USD</th> <!-- New Column -->
+                     <th>Exchange Rate EUR/USD (today)</th> <!-- New Column -->
                      <th>Update</th>
                      <th>Delete</th>
                   </tr>
                </thead>
                <tbody></tbody>
             </table>
-
+         
+         <div class ="button-row">
+            <button id="calculateButton" onclick="calculateTotal()">Calculate your total</button> <!-- button to calculate the grand total of transactions -->
+            <button id="downloadButton" onclick="downloadCSV()">Download CSV</button> <!-- button to download transactions as CSV -->
+            <button id="backButtonDiv" onclick="goBack()">Go back</button> <!-- button to go back to the main page -->
+         </div>
          <!-- dding a button to calculate the grand total of transactions -->
          <button id="calculateButton" onclick="calculateTotal()" style= "display: none;">Calculate your total</button>
 
          <div id="totalDisplay" style="display: block;">
             <h3>Total Amount €: <span id="totalAmount"></span></h3>
          </div>
-
-         <div id="downloadButtonDiv" style="display: block;">
-            <button id="downloadButton" onclick="downloadCSV()">Download CSV</button>
-         </div>
-         </div>
-
+         
          <!--adding back button https://www.w3schools.com/tags/tag_button.asp-->
          <div id="backButtonDiv" style="display: none;">
             <button id="backButton" onclick="goBack()">Go back</button>
@@ -215,9 +287,10 @@
                var transactionId = rowElement.getAttribute('id'); // Get the ID of the transaction
                
                document.querySelector('input[name="id"]').value = transactionId; // Set the ID in the form
-               document.querySelector('input[name="description"]').value = rowElement.cells[1].innerHTML; // Set the description in the form
-               document.querySelector('input[name="amount"]').value = rowElement.cells[2].innerHTML; // Set the amount in the form
-               document.querySelector('select[name="transaction-type"]').value = rowElement.cells[3].innerHTML; // Set the transaction type in the form
+               document.querySelector('input[name="description"]').value = rowElement.cells[2].innerHTML; // Set the description in the form
+               document.querySelector('input[name="amount"]').value = rowElement.cells[3].innerHTML; // Set the amount in the form
+               document.querySelector('select[name="transaction-type"]').value = rowElement.cells[4].innerHTML; // Set the transaction type in the form
+               document.querySelector('input[name="date"]').value = rowElement.getAttribute('data-date'); // Set the date in the form https://stackoverflow.com/questions/11286661/set-custom-attribute-using-javascript
             
 
             }
@@ -244,15 +317,30 @@
                      result.forEach(function(transaction) {
                         
                         var rowElement = tableBody.insertRow(); // insert new row https://stackoverflow.com/questions/15866451/how-to-insert-row-at-end-of-table-with-htmltableelement-insertrow
-                        rowElement.setAttribute('id', transaction.id); // Set the ID of the row https://www.w3schools.com/jsref/met_element_setattribute.asp
+                        rowElement.setAttribute('id', transaction.id);
+                        rowElement.setAttribute('data-date', transaction.date);
+                        
+                        // Set the date attribute for the row https://stackoverflow.com/questions/11286661/set-custom-attribute-using-javascrip
+
+                        let formattedDate = "";
+                        if (transaction.date) {
+                           const date = new Date(transaction.date);
+                           formattedDate = date.toLocaleDateString('en-IE', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit'
+                           });
+                        }
+                        
                         rowElement.insertCell(0).innerHTML = transaction.id; // insert ID
-                        rowElement.insertCell(1).innerHTML = transaction.description; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
-                        rowElement.insertCell(2).innerHTML = transaction.amount; // insert amount
-                        rowElement.insertCell(3).innerHTML = transaction.transaction_type; // insert transaction type
-                        rowElement.insertCell(4).innerHTML = transaction.amount_in_usd ; // insert exchange rate,
-                        rowElement.insertCell(5).innerHTML = transaction.exchange_rate; // insert exchange rate
-                        rowElement.insertCell(6).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
-                        rowElement.insertCell(7).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
+                        rowElement.insertCell(1).innerHTML = formattedDate;
+                        rowElement.insertCell(2).innerHTML = transaction.description || ''; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
+                        rowElement.insertCell(3).innerHTML = transaction.amount || ''; // insert amount
+                        rowElement.insertCell(4).innerHTML = transaction.transaction_type || ''; // insert transaction type
+                        rowElement.insertCell(5).innerHTML = transaction.amount_in_usd || ''; // insert exchange rate,
+                        rowElement.insertCell(6).innerHTML = transaction.exchange_rate || ''; // insert exchange rate
+                        rowElement.insertCell(7).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
+                        rowElement.insertCell(8).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
                      });
                      calculateTotal(); // Call the function to calculate the total amount
                   },
@@ -269,7 +357,8 @@
                var transaction = {
                   description: form.querySelector('input[name="description"]').value,
                   amount: form.querySelector('input[name="amount"]').value,
-                  transaction_type: form.querySelector('select[name="transaction-type"]').value
+                  transaction_type: form.querySelector('select[name="transaction-type"]').value,
+                  date: form.querySelector('input[name="date"]').value // Get the date from the form
                };
 
                // calling the function to add the transaction to the table via Ajac
@@ -308,7 +397,8 @@
                   id: form.querySelector('input[name="id"]').value, // Get the ID from the form
                   description: form.querySelector('input[name="description"]').value,
                   amount: parseFloat(form.querySelector('input[name="amount"]').value), //https://www.w3schools.com/jsref/jsref_parsefloat.asp
-                  transaction_type: form.querySelector('select[name="transaction-type"]').value
+                  transaction_type: form.querySelector('select[name="transaction-type"]').value,
+                  date: form.querySelector('input[name="date"]').value // added date 
                };
             
 
@@ -323,9 +413,11 @@
                   success:function(result){
                   // update the row in the table
                      var rowElement = document.getElementById(transaction.id);
-                     rowElement.cells[0].innerHTML = transaction.description; // Update description
-                     rowElement.cells[1].innerHTML = transaction.amount; // Update amount
-                     rowElement.cells[2].innerHTML = transaction.transaction_type; // Update transaction type
+                     rowElement.cells[0].innerHTML = transaction.date; // Update date
+                     rowElement.cells[1].innerHTML = transaction.description; // Update description
+                     rowElement.cells[2].innerHTML = transaction.amount; // Update amount
+                     rowElement.cells[3].innerHTML = transaction.transaction_type; // Update transaction type
+                     rowElement.setAttribute('data-date', transaction.date); // Update date attribute https://stackoverflow.com/questions/15866451/how-to-set-data-attribute-in-javascript
 
                      clearForm(); // Clear the form
                      showViewAll(); // Show the transactions table
@@ -426,8 +518,8 @@
                var tableRows = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0].rows;
                for (var i = 0; i < tableRows.length; i++) {
                      var row = tableRows[i];
-                     var amount = parseFloat(row.cells[2].innerHTML); // Get the amount from the table cell
-                     var transactionType = row.cells[3].innerHTML; // Get the transaction type from the table cell
+                     var amount = parseFloat(row.cells[3].innerHTML); // Get the amount from the table cell
+                     var transactionType = row.cells[4].innerHTML; // Get the transaction type from the table cell
 
                      if (transactionType === 'income') {
                         totalIncome += amount;
@@ -450,7 +542,7 @@
             
 
             function downloadCSV() {
-                  window.location.href = "http://localhost:5000/download_transactions"; //  download
+                  window.location.href = "http://localhost:5000/download_transactions"; //  download https://stackoverflow.com/questions/14964035/how-to-download-a-file-using-javascript
             }
       </script>
 

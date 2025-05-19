@@ -122,7 +122,8 @@ def create_transaction():
         "amount": amount,
         "transaction_type": request.json['transaction_type'],
         "amount_in_usd": amount_in_usd, 
-        "exchange_rate": exchange_rate # Store the exchange rate used for conversion
+        "exchange_rate": exchange_rate, # Store the exchange rate used for conversion
+        "date": request.json.get('date')  # date
         
     }
     added_transaction = TransactionDAO.create(transaction)
@@ -151,7 +152,8 @@ def update_transaction(id):
         "amount": new_amount,   
         "transaction_type": new_transaction_type,
         "amount_in_usd": new_amount_in_usd,  # Update the amount in USD
-        "exchange_rate": get_exchange_rate  # Keep the same exchange rate
+        "exchange_rate": get_exchange_rate,  # Keep the same exchange rate
+        "date": request.json.get('date')  # date
     }
     TransactionDAO.update(id, updated_transaction)
     return jsonify(updated_transaction)
@@ -188,11 +190,13 @@ def download_transactions():
     writer = csv.writer(si) # https://stackoverflow.com/questions/13120127/how-can-i-use-io-stringio-with-the-csv-module
     
     # Write the CSV header (column names)
-    writer.writerow(['ID', 'Description', 'Amount', 'Transaction Type', 'Amount in USD', 'Exchange Rate'])
+    writer.writerow(['ID', 'Date of Transaction', 'Description', 'Amount', 'Transaction Type', 'Amount in USD', 'Exchange Rate'])
     
     # Write each transaction's data
     for transaction in transactions:
-        writer.writerow([transaction['id'], transaction['description'], transaction['amount'], 
+        # Convert the date to a string format if it's a datetime object
+        date_str = transaction['date'] if transaction['date'] else ''
+        writer.writerow([transaction['id'], date_str, transaction['description'], transaction['amount'], 
                          transaction['transaction_type'], transaction['amount_in_usd'], transaction['exchange_rate']])
     
     # Prepare the CSV for download https://stackoverflow.com/questions/30024948/flask-download-a-csv-file-on-clicking-a-button
