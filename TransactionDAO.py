@@ -75,7 +75,7 @@ class TransactionDAO:
       
       def update(self, id, transaction):
          cursor = self.get_cursor()
-         sql = "update transaction set description = %s, amount = %s, transaction_type = %s, amount_in_usd = %s, exchange_rate = %s, date = %s, where id = %s"
+         sql = "update transaction set description = %s, amount = %s, transaction_type = %s, amount_in_usd = %s, exchange_rate = %s, date = %s where id = %s"
          values = (transaction.get('description'), transaction.get('amount'), transaction.get('transaction_type'), transaction.get('amount_in_usd'), transaction.get('exchange_rate'), transaction.get('date'), id)
          cursor.execute(sql, values)
          self.connection.commit()
