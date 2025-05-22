@@ -205,6 +205,27 @@ def download_transactions():
     
     return response
 
+@app.route('/transactions/balance', methods=['GET'])
+@cross_origin()
+def get_balance():
+    cursor = TransactionDAO.get_cursor()
+
+    # Calculate the total income and expense
+    cursor.execute("SELECT SUM(amount) FROM transaction WHERE transaction_type = 'income'")
+    income_result = cursor.fetchone()[0]
+    income = income_result if income_result is not None else 0
+
+    cursor.execute("SELECT SUM(amount) FROM transaction WHERE transaction_type = 'expense'")
+    expense_result = cursor.fetchone()[0]
+    expense = expense_result if expense_result is not None else 0
+
+    # Calculate the balance
+    balance = income - expense
+
+    TransactionDAO.close_all()
+
+    return jsonify({"balance": balance})
+    
 
 
 # running the flask app

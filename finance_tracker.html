@@ -155,8 +155,8 @@
          }
 
          .button-row button:hover {
-            background-color: #561cc0; /* blue background on hover */
-            color: #f0e443ce; /* yellow text on hover */
+            background-color: #561cc0; 
+            color: #f0e443ce; 
          }
 
       </style>
@@ -221,7 +221,7 @@
                      <th>Amount EUR</th>
                      <th>Type</th>
                      <th>Amount in USD</th>  <!-- New Column -->
-                     <th>Exchange Rate EUR/USD (today)</th> <!-- New Column -->
+                     <th>Exchange Rate EUR/USD</th> <!-- New Column -->
                      <th>Update</th>
                      <th>Delete</th>
                   </tr>
@@ -238,7 +238,7 @@
          <button id="calculateButton" onclick="calculateTotal()" style= "display: none;">Calculate your Balance</button>
 
          <div id="totalDisplay" style="display: block;">
-            <h3>Your balance is €: <span id="totalAmount"></span></h3>
+            <h3>Your balance is €  <span id="totalAmount"></span></h3>
          </div>
 
          <!--adding back button https://www.w3schools.com/tags/tag_button.asp-->
@@ -335,13 +335,25 @@
                               day: '2-digit'
                            });
                         }
-                        
+
+                        // formatting amounts to 1,234.56 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+                        const formattedEURO = Number(transaction.amount).toLocaleString('en-IE', {
+                           minimumFractionDigits: 2,
+                           maximumFractionDigits: 2
+                        });
+
+                        const formattedDOLLAR = Number(transaction.amount_in_usd).toLocaleString('en-IE', {
+                           minimumFractionDigits: 2,
+                           maximumFractionDigits: 2
+                        });
+
+                       
                         rowElement.insertCell(0).innerHTML = transaction.id; // insert ID
                         rowElement.insertCell(1).innerHTML = formattedDate;
                         rowElement.insertCell(2).innerHTML = transaction.description || ''; // insert desription https://www.w3schools.com/jsref/met_table_insertrow.asp
-                        rowElement.insertCell(3).innerHTML = transaction.amount || ''; // insert amount
+                        rowElement.insertCell(3).innerHTML = `<strong>${formattedEURO}</strong>`; // insert amount with bold  https://stackoverflow.com/questions/23534268/how-to-set-text-in-tag-strong
                         rowElement.insertCell(4).innerHTML = transaction.transaction_type || ''; // insert transaction type
-                        rowElement.insertCell(5).innerHTML = transaction.amount_in_usd || ''; // insert exchange rate,
+                        rowElement.insertCell(5).innerHTML = `<strong>${formattedDOLLAR}</strong>`; // insert exchange rate,
                         rowElement.insertCell(6).innerHTML = transaction.exchange_rate || ''; // insert exchange rate
                         rowElement.insertCell(7).innerHTML = '<button onclick="showUpdate(this)">Update</button>'; // adding update button
                         rowElement.insertCell(8).innerHTML = '<button onclick="doDelete(this)">Delete</button>'; // adding delete button
@@ -507,43 +519,23 @@
                      getCurrencyExchangeRate();
 
             // Function to calculate the total amount of transactions
-            // this function was created with the help of ChatGPT
-            // Prompted: Write a function to calculate the total amount of transactions in a table
-            // and display the result in a div. The table has columns for ID, Description, Amount, Type, and Amount in USD.
-            // The function should sum the amounts based on the transaction type (add income and subtract expense)
-            // and display the total amount in a div with the ID 'totalAmount'.
-            // toggle the visibility of the total display div.
-            // so the user can see the total amount when they click the button and hide it when they click again.
+            // removed prevoius function and created a new one with a function with a sql query
 
             function calculateTotal() {
-               var totalIncome = 0;
-               var totalExpense = 0;
+               fetch('http://localhost:5000/transactions/balance')
+                  .then(response => response.json())                             // https://www.reddit.com/r/learnjavascript/comments/wfbfe9/what_exactly_does_responsejson_do/
+                  .then(({ balance }) => {
+                     const formatted = Number(balance).toLocaleString('en-IE', { //https://stackoverflow.com/questions/21536984/javascript-format-whole-numbers-using-tolocalestring
+                        minimumFractionDigits: 2,                                // https://stackoverflow.com/questions/55834596/use-intl-numberformat-with-maximumfractiondigits-and-maximumsignificantdigi
+                        maximumFractionDigits: 2
+               });
 
-               var tableRows = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0].rows;
-               for (var i = 0; i < tableRows.length; i++) {
-                     var row = tableRows[i];
-                     var amount = parseFloat(row.cells[3].innerHTML); // Get the amount from the table cell
-                     var transactionType = row.cells[4].innerHTML; // Get the transaction type from the table cell
+               document.getElementById('totalAmount').innerText = formatted;
 
-                     if (transactionType === 'income') {
-                        totalIncome += amount;
-                     } else if (transactionType === 'expense') {
-                        totalExpense += amount;
-                     }
-               }
-
-               var totalAmount = totalIncome - totalExpense; // Calculate the total amount
-               document.getElementById('totalAmount').innerHTML = totalAmount; // Display the total amount
-
-               // Toggle the visibility of the total display
-               var totalDisplay = document.getElementById('totalDisplay');
-               if (totalDisplay.style.display === "none") {
-                  totalDisplay.style.display = "block"; // Show the total amount display
-               } else {
-               totalDisplay.style.display = "none"; // Hide the total amount display
-               }
-            }
-            
+               const display = document.getElementById('totalDisplay');
+               display.style.display = (display.style.display === 'none') ? 'block' : 'none'; // https://www.reddit.com/r/learnjavascript/comments/qq3yz3/change_display_none_to_display_block_in_h3/
+           });
+      }
 
             function downloadCSV() {
                   window.location.href = "http://localhost:5000/download_transactions"; //  download https://stackoverflow.com/questions/14964035/how-to-download-a-file-using-javascript
