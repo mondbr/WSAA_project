@@ -306,7 +306,7 @@
             // function to show all transactions from the database, referred to AndrewBeatty code
             function fetchTransactions() {
                $.ajax({
-                  url: "http://localhost:5000/transactions",
+                  url: "https://mondbr.pythonanywhere.com/transactions",
                   method: "GET", // GET method to fetch all transactions
                   //data: JSON.stringify(transaction), // data to be sent to the server
                   dataType: "json",
@@ -385,7 +385,7 @@
                console.log(JSON.stringify(transaction)); 
 
                $.ajax({
-                  url: "http://localhost:5000/transactions",
+                  url: "https://mondbr.pythonanywhere.com/transactions",
                   method: "POST", // POST method to create a new transaction
                   data: JSON.stringify(transaction),
                   dataType: "json",
@@ -421,7 +421,7 @@
             
                // calling the function to update the transaction via ajax
                $.ajax({
-                  url: "http://localhost:5000/transactions/" + transaction.id,
+                  url: "https://mondbr.pythonanywhere.com/transactions/" + transaction.id,
                   method: "PUT", // PUT method to update a transaction
                   data: JSON.stringify(transaction),
                   dataType: "json",
@@ -482,7 +482,7 @@
 
             // delete a transaction via ajax
                   $.ajax({
-                     url: "http://localhost:5000/transactions" + "/" + transactionId,
+                     url: "https://mondbr.pythonanywhere.com/transactions" + "/" + transactionId,
                      method: "DELETE", // DELETE method to delete a transaction
                      success: function() {
                      rowElement.remove(); // Remove the row from the table and show pop up message https://datatables.net/forums/discussion/42588/delete-specific-row-from-datatables
@@ -522,7 +522,7 @@
             // removed prevoius function and created a new one with a function with a sql query
 
             function calculateTotal() {
-               fetch('http://localhost:5000/transactions/balance')
+               fetch('https://mondbr.pythonanywhere.com/transactions/balance')
                   .then(response => response.json())                             // https://www.reddit.com/r/learnjavascript/comments/wfbfe9/what_exactly_does_responsejson_do/
                   .then(({ balance }) => {
                      const formatted = Number(balance).toLocaleString('en-IE', { //https://stackoverflow.com/questions/21536984/javascript-format-whole-numbers-using-tolocalestring
@@ -538,7 +538,7 @@
       }
 
             function downloadCSV() {
-                  window.location.href = "http://localhost:5000/download_transactions"; //  download https://stackoverflow.com/questions/14964035/how-to-download-a-file-using-javascript
+                  window.location.href = "https://mondbr.pythonanywhere.com/transactions"; //  download https://stackoverflow.com/questions/14964035/how-to-download-a-file-using-javascript
             }
       </script>
 

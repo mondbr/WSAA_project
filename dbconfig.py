@@ -1,7 +1,6 @@
 mysql = {
-    'host':"localhost",
-    'user':"root",
-    'password':"",
-    'database':"budget_tracker"
+    'host':"mondbr.mysql.pythonanywhere-services.com",
+    'user':"mondbr",
+    'password':"myspending",
+    'database':"mondbr$budget_tracker"
 }
-
