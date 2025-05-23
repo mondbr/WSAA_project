@@ -173,6 +173,7 @@ cython_debug/
 dbconfig-localmysql.py
 config.py
 dbconfig-local.py
+dbconfig.py
 
 
 
