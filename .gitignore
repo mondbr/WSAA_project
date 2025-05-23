@@ -170,10 +170,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-
+dbconfig-localmysql.py
 config.py
-dbconfig.py
 dbconfig-local.py
+dbconfig.py
 
 
 
