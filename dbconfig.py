@@ -4,3 +4,4 @@ mysql = {
     'password':"",
     'database':"budget_tracker"
 }
+
