@@ -1,5 +1,6 @@
 # This is a configuration file for connecting to a MySQL database on PythonAnywhere.
 
+
 dbconfig = {
    "user": "your_username",
    "password": "your_password",
