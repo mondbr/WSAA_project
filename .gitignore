@@ -172,8 +172,8 @@ cython_debug/
 
 
 config.py
-dbconfig.py
+dbconfig_pythonanywhere.py
 
 
 
-# Local configuration file
+# 
