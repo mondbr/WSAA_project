@@ -16,7 +16,7 @@ The key goals are:
 * Link the application to a database to work on data.
 * Optionally, integrate an external data source and host the solution     online.
 
-As my approach to this project, I decited to create a personal finance tracker web app using **Flask**, **MySQL**, and **JavaScript**.
+As my approach to this project, I decided to create a personal finance tracker web app using **Flask**, **MySQL**, and **JavaScript**.
 It has an easy-to-use frontend that interacts with a **RESTful API** to perform real-time **CRUD** operations. The backend uses a **MySQL** database, and it connects to [freecurrencyapi](https://freecurrencyapi.com/) to real-time convert expenses from Euro to Dollar. 
 I deployed the app on PythonAnywhere so it’s accessible online anytime for demonstration.
 
@@ -132,7 +132,7 @@ There is also a **Go back** button which triggers the `goBack()` function to hid
 
 You can also easily modify or remove existing transactions via the interactive table:
 
-**Update** button opens a pre-filled (description and transactions current details)using `showUpdateForm()` function. Submitting the form run `doUpdate()` function and sends an AJAX PUT request to the Flask `(/transactions/<id>)` which updates the record in the MySQL database.  The database is updated and refreshes the frontend to show the latest data.
+**Update** button opens a pre-filled (description and transactions type current details) using `showUpdateForm()` function. Submitting the form run `doUpdate()` function and sends an AJAX PUT request to the Flask `(/transactions/<id>)` which updates the record in the MySQL database.  The database is updated and refreshes the frontend to show the latest data.
 
 <img src="images/update.png" width=50% height=20%>
 
@@ -150,6 +150,15 @@ The balance is displayed with HTML element `id="totalAmount"` and toggles the vi
 <img src="images/balance.png" width=50% height=20%>
 
 These interactions are handled via JavaScript functions and the Flask backend routes defined in `flask_app_server.py`.
+
+By using `if` statements there are a controls in place that application will not allow to create or update transaction if any of the fields are missing. If user would add a white spaces, it will not allow as well - it is controlled by `trim()`.
+
+Also, it will not allow to add a negative transaction amount. All amounts should be greater than zero, as there are types (income or expense), where incomes are increasing the total balance and expenses are deducted from the balance. 
+
+If any of the fields are missing or negative or 0 as amount is entered, the following `alert()` is shown:
+
+<img src="images/missing-fields-alert.png" width=50% height=20%>
+
 
 ---
 
