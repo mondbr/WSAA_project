@@ -386,10 +386,19 @@
                var form = document.getElementById('createUpdateForm');
                var transaction = {
                   description: form.querySelector('input[name="description"]').value,
-                  amount: form.querySelector('input[name="amount"]').value,
+                  amount: parseFloat(form.querySelector('input[name="amount"]').value), // convert to float //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
                   transaction_type: form.querySelector('select[name="transaction-type"]').value,
                   date: form.querySelector('input[name="date"]').value // Get the date from the form
                };
+               if (!transaction.description.trim() || // https://www.w3schools.com/jsref/jsref_trim_string.asp
+                    isNaN(transaction.amount) || //https://www.w3schools.com/jsref/jsref_isnan.asp
+                    transaction.amount <=0 ||
+                    !transaction.transaction_type || //https://stackoverflow.com/questions/19491491/what-does-an-exclamation-mark-before-a-variable-mean-in-javascript
+                    !transaction.date)
+                    {
+                   alert("Please fill all the fields. Remember that amount must be greater than 0!");
+                   return; // stop execution if entry is invalid
+               }
 
                // calling the function to add the transaction to the table via Ajac
                createTransactionAjax(transaction);
@@ -430,6 +439,15 @@
                   transaction_type: form.querySelector('select[name="transaction-type"]').value,
                   date: form.querySelector('input[name="date"]').value // added date 
                };
+               if (!transaction.description.trim() || // repeat the same if statement as for create new transaction
+                    isNaN(transaction.amount) ||
+                    transaction.amount <=0 ||
+                    !transaction.transaction_type ||
+                    !transaction.date)
+                    {
+                   alert("Please fill all the fields. Remember that amount must be greater than 0!");
+                   return; // stop execution if entry is invalid
+               }
             
 
             
